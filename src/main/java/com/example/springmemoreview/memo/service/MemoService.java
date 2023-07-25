@@ -9,6 +9,7 @@ import com.example.springmemoreview.memo.repository.MemoRepository;
 import com.example.springmemoreview.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -38,9 +39,34 @@ public class MemoService {
         return new MemoResponseDto(memo);
     }
 
+    @Transactional
+    public MemoResponseDto updateMemo(Long memoId, MemoRequestDto requestDto, User user) throws ReflectiveOperationException {
+        Memo memo = findMemo(memoId);
+
+        if(checkMemoUser(memo, user)) {
+            if(requestDto.getTitle() != null) {
+                memo.changeTitle(requestDto.getTitle());
+            }
+            if(requestDto.getContent() != null) {
+                memo.changeContent(requestDto.getContent());
+            }
+        } else {
+            throw new ReflectiveOperationException("작성자만 수정할 수 있습니다.");
+        }
+        return new MemoResponseDto(memo);
+    }
+
     public Memo findMemo(Long memoId) {
         return memoRepository.findById(memoId).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 게시물입니다.")
         );
+    }
+
+    public boolean checkMemoUser(Memo memo, User user) {
+        if(memo.getUser().getId() == user.getId()){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

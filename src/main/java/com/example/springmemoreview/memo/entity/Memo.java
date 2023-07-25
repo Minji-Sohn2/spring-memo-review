@@ -31,4 +31,12 @@ public class Memo extends Timestamped {
         this.content = requestDto.getContent();
         this.user = user;
     }
+
+    public void changeTitle(String title) {
+        this.title = title;
+    }
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
 }

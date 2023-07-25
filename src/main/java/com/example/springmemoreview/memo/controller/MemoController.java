@@ -1,11 +1,13 @@
 package com.example.springmemoreview.memo.controller;
 
+import com.example.springmemoreview.common.dto.ApiResponseDto;
 import com.example.springmemoreview.memo.dto.MemoListResponseDto;
 import com.example.springmemoreview.memo.dto.MemoRequestDto;
 import com.example.springmemoreview.memo.dto.MemoResponseDto;
 import com.example.springmemoreview.memo.service.MemoService;
 import com.example.springmemoreview.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,21 @@ public class MemoController {
     @GetMapping("/{memoId}")
     public ResponseEntity<MemoResponseDto> getOneMemo(@PathVariable Long memoId) {
         MemoResponseDto result = memoService.getOneMemo(memoId);
+        return ResponseEntity.ok().body(result);
+    }
+
+    @PutMapping("/{memoId}")
+    public ResponseEntity<?> updateMemo(
+            @PathVariable Long memoId,
+            @RequestBody MemoRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        MemoResponseDto result = null;
+        try {
+            result = memoService.updateMemo(memoId, requestDto, userDetails.getUser());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
         return ResponseEntity.ok().body(result);
     }
 }
