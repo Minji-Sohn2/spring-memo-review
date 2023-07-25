@@ -32,4 +32,11 @@ public class MemoService {
                 .map(SimpleMemoResponseDto::new).toList();
         return new MemoListResponseDto(simpleMemoResponseDtoList);
     }
+
+    public MemoResponseDto getOneMemo(Long memoId) {
+        Memo memo = memoRepository.findById(memoId).orElseThrow(
+                () -> new NullPointerException("존재하지 않는 게시물입니다.")
+        );
+        return new MemoResponseDto(memo);
+    }
 }

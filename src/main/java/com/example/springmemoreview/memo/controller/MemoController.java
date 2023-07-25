@@ -30,4 +30,10 @@ public class MemoController {
         MemoListResponseDto result = memoService.getMemoList();
         return ResponseEntity.ok().body(result);
     }
+
+    @GetMapping("/{memoId}")
+    public ResponseEntity<MemoResponseDto> getOneMemo(@PathVariable Long memoId) {
+        MemoResponseDto result = memoService.getOneMemo(memoId);
+        return ResponseEntity.ok().body(result);
+    }
 }
