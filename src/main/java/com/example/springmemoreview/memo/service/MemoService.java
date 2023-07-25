@@ -31,11 +31,13 @@ public class MemoService {
         List<SimpleMemoResponseDto> simpleMemoResponseDtoList
                 = memoRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(SimpleMemoResponseDto::new).toList();
+
         return new MemoListResponseDto(simpleMemoResponseDtoList);
     }
 
     public MemoResponseDto getOneMemo(Long memoId) {
         Memo memo = findMemo(memoId);
+
         return new MemoResponseDto(memo);
     }
 
@@ -53,7 +55,18 @@ public class MemoService {
         } else {
             throw new ReflectiveOperationException("작성자만 수정할 수 있습니다.");
         }
+
         return new MemoResponseDto(memo);
+    }
+
+    public void deleteMemo(Long memoId, User user) throws ReflectiveOperationException {
+        Memo memo = findMemo(memoId);
+
+        if(checkMemoUser(memo, user)) {
+            memoRepository.delete(memo);
+        } else {
+            throw new ReflectiveOperationException("작성자만 삭제할 수 있습니다.");
+        }
     }
 
     public Memo findMemo(Long memoId) {

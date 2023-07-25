@@ -53,4 +53,17 @@ public class MemoController {
         }
         return ResponseEntity.ok().body(result);
     }
+
+    @DeleteMapping("/{memoId}")
+    public ResponseEntity<?> deleteMemo(
+            @PathVariable Long memoId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        try {
+            memoService.deleteMemo(memoId, userDetails.getUser());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+        return ResponseEntity.ok().body(new ApiResponseDto(memoId + "번 메모 삭제", HttpStatus.OK.value()));
+    }
 }
