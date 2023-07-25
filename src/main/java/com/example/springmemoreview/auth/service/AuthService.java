@@ -22,6 +22,11 @@ public class AuthService {
         String username = requestDto.getUsername();
         String nickname = requestDto.getNickname();
         String password = passwordEncoder.encode(requestDto.getPassword());
+        String confirmPassword = passwordEncoder.encode(requestDto.getConfirmPassword());
+
+        if(!passwordEncoder.matches(password, confirmPassword)) {
+            throw new IllegalArgumentException("비밀번호를 다시 확인해주세요.");
+        }
 
         if(userRepository.findByUsername(username).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 회원입니다.");
