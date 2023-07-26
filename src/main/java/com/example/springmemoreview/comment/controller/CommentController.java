@@ -43,8 +43,21 @@ public class CommentController {
         try {
             result = commentService.updateComment(commentId, requestDto, userDetails.getUser());
         } catch (Exception e) {
-            return ResponseEntity.status(201).body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
         return ResponseEntity.ok().body(result);
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<ApiResponseDto> deleteComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        try {
+            commentService.deleteComment(commentId,userDetails.getUser());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+        return ResponseEntity.ok().body(new ApiResponseDto("댓글 삭제 성공", HttpStatus.OK.value()));
     }
 }

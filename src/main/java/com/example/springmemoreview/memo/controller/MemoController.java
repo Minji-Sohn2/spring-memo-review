@@ -64,6 +64,6 @@ public class MemoController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
-        return ResponseEntity.ok().body(new ApiResponseDto(memoId + "번 메모 삭제", HttpStatus.OK.value()));
+        return ResponseEntity.ok().body(new ApiResponseDto("메모 삭제 성공", HttpStatus.OK.value()));
     }
 }

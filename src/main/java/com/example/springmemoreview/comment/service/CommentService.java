@@ -42,6 +42,16 @@ public class CommentService {
         return new CommentResponseDto(comment);
     }
 
+    public void deleteComment(Long commentId, User user) {
+        Comment comment = findComment(commentId);
+
+        if(comment.getUser().getId().equals(user.getId())) {
+            commentRepository.delete(comment);
+        } else {
+            throw new RejectedExecutionException("작성자만 삭제할 수 있습니다.");
+        }
+    }
+
     public Memo findMemo(Long memoId) {
         return memoRepository.findById(memoId).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 게시물입니다.")
