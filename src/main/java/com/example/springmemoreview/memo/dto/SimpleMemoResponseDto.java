@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class SimpleMemoResponseDto {
+    // 메모 목록 조회할 때 간단히
     private Long id;
     private String title;
     private String nickname;
