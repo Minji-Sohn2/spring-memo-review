@@ -31,6 +31,6 @@ public class MemoResponseDto {
                 .stream()
                 .map(CommentResponseDto::new)
                 .sorted(Comparator.comparing(CommentResponseDto::getModifiedAt).reversed())
-                .collect(Collectors.toList());;
+                .collect(Collectors.toList());
     }
 }

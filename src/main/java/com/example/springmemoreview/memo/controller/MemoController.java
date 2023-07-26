@@ -45,7 +45,7 @@ public class MemoController {
             @RequestBody MemoRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        MemoResponseDto result = null;
+        MemoResponseDto result;
         try {
             result = memoService.updateMemo(memoId, requestDto, userDetails.getUser());
         } catch (Exception e) {
