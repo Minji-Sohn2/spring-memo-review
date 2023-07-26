@@ -32,4 +32,19 @@ public class CommentController {
         }
         return ResponseEntity.status(201).body(result);
     }
+
+    @PutMapping("/{commentId}")
+    public ResponseEntity<?> updateComment(
+            @PathVariable Long commentId,
+            @RequestBody CommentRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        CommentResponseDto result;
+        try {
+            result = commentService.updateComment(commentId, requestDto, userDetails.getUser());
+        } catch (Exception e) {
+            return ResponseEntity.status(201).body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+        return ResponseEntity.ok().body(result);
+    }
 }

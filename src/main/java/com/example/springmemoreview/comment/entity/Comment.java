@@ -33,4 +33,8 @@ public class Comment extends Timestamped {
         this.user = user;
         this.memo = memo;
     }
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
 }

@@ -9,6 +9,9 @@ import com.example.springmemoreview.memo.repository.MemoRepository;
 import com.example.springmemoreview.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.concurrent.RejectedExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +29,28 @@ public class CommentService {
         return new CommentResponseDto(comment);
     }
 
+    @Transactional
+    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, User user) {
+        Comment comment = findComment(commentId);
+
+        if(comment.getUser().getId().equals(user.getId())) {
+            comment.changeContent(requestDto.getContent());
+        } else {
+            throw new RejectedExecutionException("작성자만 수정할 수 있습니다.");
+        }
+
+        return new CommentResponseDto(comment);
+    }
+
     public Memo findMemo(Long memoId) {
         return memoRepository.findById(memoId).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 게시물입니다.")
+        );
+    }
+
+    public Comment findComment(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(
+                () -> new NullPointerException("존재하지 않는 댓글입니다.")
         );
     }
 }
