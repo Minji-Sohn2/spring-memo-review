@@ -22,9 +22,9 @@ public class AuthService {
         String username = requestDto.getUsername();
         String nickname = requestDto.getNickname();
         String password = passwordEncoder.encode(requestDto.getPassword());
-        String confirmPassword = passwordEncoder.encode(requestDto.getConfirmPassword());
+        String confirmPassword = requestDto.getConfirmPassword();
 
-        if(!passwordEncoder.matches(password, confirmPassword)) {
+        if(!passwordEncoder.matches(confirmPassword, password)) {
             throw new IllegalArgumentException("비밀번호를 다시 확인해주세요.");
         }
 
