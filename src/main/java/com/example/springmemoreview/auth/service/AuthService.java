@@ -45,11 +45,11 @@ public class AuthService {
         String password = requestDto.getPassword();
 
         User user = userRepository.findByUsername(username).orElseThrow(
-                IllegalArgumentException::new
+                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
 
         if(!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
         }
 
         String token = jwtUtil.createToken(user.getUsername());
