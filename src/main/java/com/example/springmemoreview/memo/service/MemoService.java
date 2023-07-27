@@ -3,80 +3,66 @@ package com.example.springmemoreview.memo.service;
 import com.example.springmemoreview.memo.dto.MemoListResponseDto;
 import com.example.springmemoreview.memo.dto.MemoRequestDto;
 import com.example.springmemoreview.memo.dto.MemoResponseDto;
-import com.example.springmemoreview.memo.dto.SimpleMemoResponseDto;
 import com.example.springmemoreview.memo.entity.Memo;
-import com.example.springmemoreview.memo.repository.MemoRepository;
 import com.example.springmemoreview.user.entity.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.concurrent.RejectedExecutionException;
+public interface MemoService {
+    /**
+     * 메모 작성
+     *
+     * @param requestDto 작성할 메모 내용
+     * @param user       요청자
+     * @return 작성된 메모
+     */
+    MemoResponseDto createMemo(MemoRequestDto requestDto, User user);
 
-@Service
-@RequiredArgsConstructor
-public class MemoService {
+    /**
+     * 메모 목록 조회(간단한 정보)
+     *
+     * @return 메모 목록
+     */
+    MemoListResponseDto getMemoList();
 
-    private final MemoRepository memoRepository;
+    /**
+     * 메모 1개 조회
+     *
+     * @param memoId 조회할 메모 id
+     * @return 조회된 메모
+     */
+    MemoResponseDto getOneMemo(Long memoId);
 
-    public MemoResponseDto createMemo(MemoRequestDto requestDto, User user) {
+    /**
+     * 메모 수정
+     *
+     * @param memoId     수정할 메모 id
+     * @param requestDto 수정할 메모 내용
+     * @param user       요청자
+     * @return 수정된 메모
+     */
+    MemoResponseDto updateMemo(Long memoId, MemoRequestDto requestDto, User user);
 
-        Memo memo = new Memo(requestDto, user);
-        memoRepository.save(memo);
+    /**
+     * 메모 삭제
+     *
+     * @param memoId 삭제할 메모 id
+     * @param user   요청자
+     */
+    void deleteMemo(Long memoId, User user);
 
-        return new MemoResponseDto(memo);
-    }
+    /**
+     * repository에서 메모 조회
+     *
+     * @param memoId 조회할 메모 id
+     * @return 조회된 메모
+     */
+    Memo findMemo(Long memoId);
 
-    public MemoListResponseDto getMemoList() {
-        List<SimpleMemoResponseDto> simpleMemoResponseDtoList
-                = memoRepository.findAllByOrderByCreatedAtDesc().stream()
-                .map(SimpleMemoResponseDto::new).toList();
-
-        return new MemoListResponseDto(simpleMemoResponseDtoList);
-    }
-
-    public MemoResponseDto getOneMemo(Long memoId) {
-        Memo memo = findMemo(memoId);
-
-        return new MemoResponseDto(memo);
-    }
-
-    @Transactional
-    public MemoResponseDto updateMemo(Long memoId, MemoRequestDto requestDto, User user) {
-        Memo memo = findMemo(memoId);
-
-        if(checkMemoUser(memo, user)) {
-            if(requestDto.getTitle() != null) {
-                memo.changeTitle(requestDto.getTitle());
-            }
-            if(requestDto.getContent() != null) {
-                memo.changeContent(requestDto.getContent());
-            }
-        } else {
-            throw new RejectedExecutionException("작성자만 수정할 수 있습니다.");
-        }
-
-        return new MemoResponseDto(memo);
-    }
-
-    public void deleteMemo(Long memoId, User user) {
-        Memo memo = findMemo(memoId);
-
-        if(checkMemoUser(memo, user)) {
-            memoRepository.delete(memo);
-        } else {
-            throw new RejectedExecutionException("작성자만 삭제할 수 있습니다.");
-        }
-    }
-
-    public Memo findMemo(Long memoId) {
-        return memoRepository.findById(memoId).orElseThrow(
-                () -> new NullPointerException("존재하지 않는 게시물입니다.")
-        );
-    }
-
-    public boolean checkMemoUser(Memo memo, User user) {
-        return memo.getUser().getId() == user.getId();
-    }
+    /**
+     * 메모의 작성자와 요청자 일치 여부 확인
+     *
+     * @param memo 확인할 메모
+     * @param user 요청자
+     * @return 일치 여부
+     */
+    boolean checkMemoUser(Memo memo, User user);
 }
