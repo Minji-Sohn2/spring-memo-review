@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class MemoService {
     }
 
     @Transactional
-    public MemoResponseDto updateMemo(Long memoId, MemoRequestDto requestDto, User user) throws ReflectiveOperationException {
+    public MemoResponseDto updateMemo(Long memoId, MemoRequestDto requestDto, User user) {
         Memo memo = findMemo(memoId);
 
         if(checkMemoUser(memo, user)) {
@@ -53,19 +54,19 @@ public class MemoService {
                 memo.changeContent(requestDto.getContent());
             }
         } else {
-            throw new ReflectiveOperationException("작성자만 수정할 수 있습니다.");
+            throw new RejectedExecutionException("작성자만 수정할 수 있습니다.");
         }
 
         return new MemoResponseDto(memo);
     }
 
-    public void deleteMemo(Long memoId, User user) throws ReflectiveOperationException {
+    public void deleteMemo(Long memoId, User user) {
         Memo memo = findMemo(memoId);
 
         if(checkMemoUser(memo, user)) {
             memoRepository.delete(memo);
         } else {
-            throw new ReflectiveOperationException("작성자만 삭제할 수 있습니다.");
+            throw new RejectedExecutionException("작성자만 삭제할 수 있습니다.");
         }
     }
 
@@ -76,10 +77,6 @@ public class MemoService {
     }
 
     public boolean checkMemoUser(Memo memo, User user) {
-        if(memo.getUser().getId() == user.getId()){
-            return true;
-        } else {
-            return false;
-        }
+        return memo.getUser().getId() == user.getId();
     }
 }
