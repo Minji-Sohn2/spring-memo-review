@@ -24,12 +24,7 @@ public class CommentController {
             @RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        CommentResponseDto result;
-        try {
-            result = commentService.createComment(memoId, requestDto, userDetails.getUser());
-        } catch (Exception e) {
-            return ResponseEntity.status(201).body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
+        CommentResponseDto result = commentService.createComment(memoId, requestDto, userDetails.getUser());
         return ResponseEntity.status(201).body(result);
     }
 
@@ -39,12 +34,7 @@ public class CommentController {
             @RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        CommentResponseDto result;
-        try {
-            result = commentService.updateComment(commentId, requestDto, userDetails.getUser());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
+        CommentResponseDto result = commentService.updateComment(commentId, requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
 
@@ -53,11 +43,7 @@ public class CommentController {
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        try {
-            commentService.deleteComment(commentId,userDetails.getUser());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
+        commentService.deleteComment(commentId,userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("댓글 삭제 성공", HttpStatus.OK.value()));
     }
 }

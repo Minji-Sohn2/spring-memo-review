@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,35 +22,13 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto) {
-        try {
-            authService.signup(requestDto);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
-
+        authService.signup(requestDto);
         return ResponseEntity.status(201).body(new ApiResponseDto("회원가입 성공", HttpStatus.CREATED.value()));
     }
 
     @PostMapping("/signin")
     public ResponseEntity<ApiResponseDto> signin(@RequestBody SigninRequestDto requestDto, HttpServletResponse response) {
-        try {
-            authService.signin(requestDto, response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponseDto("아이디 또는 패스워드를 확인해주세요.", HttpStatus.BAD_REQUEST.value()));
-        }
-
+        authService.signin(requestDto, response);
         return ResponseEntity.status(200).body(new ApiResponseDto("로그인 성공", HttpStatus.OK.value()));
-    }
-
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<ApiResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        ApiResponseDto restApiException = new ApiResponseDto(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST.value());
-
-        return new ResponseEntity<>(
-                // HTTP body
-                restApiException,
-                // HTTP status code
-                HttpStatus.BAD_REQUEST
-        );
     }
 }

@@ -21,7 +21,6 @@ public class MemoController {
 
     @PostMapping("")
     public ResponseEntity<MemoResponseDto> createMemo(@RequestBody MemoRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
         MemoResponseDto result = memoService.createMemo(requestDto, userDetails.getUser());
         return ResponseEntity.status(201).body(result);
     }
@@ -45,12 +44,7 @@ public class MemoController {
             @RequestBody MemoRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        MemoResponseDto result;
-        try {
-            result = memoService.updateMemo(memoId, requestDto, userDetails.getUser());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
+        MemoResponseDto result = memoService.updateMemo(memoId, requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
 
@@ -59,11 +53,7 @@ public class MemoController {
             @PathVariable Long memoId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        try {
-            memoService.deleteMemo(memoId, userDetails.getUser());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
+        memoService.deleteMemo(memoId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("메모 삭제 성공", HttpStatus.OK.value()));
     }
 }
