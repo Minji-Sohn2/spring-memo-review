@@ -20,33 +20,33 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public void signup(SignupRequestDto requestDto) {
-        String username = requestDto.getUsername();
         String nickname = requestDto.getNickname();
-        String password = passwordEncoder.encode(requestDto.getPassword());
+        String password = requestDto.getPassword();
         String confirmPassword = requestDto.getConfirmPassword();
 
-        if(!passwordEncoder.matches(confirmPassword, password)) {
+        if(!password.equals(confirmPassword)) {
             throw new IllegalArgumentException("비밀번호를 다시 확인해주세요.");
         }
 
-        if(userRepository.findByUsername(username).isPresent()) {
+        if(userRepository.findByNickname(nickname).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         }
 
-        if(userRepository.findByNickname(nickname).isPresent()) {
-            throw new IllegalArgumentException("이미 사용중인 닉네임입니다.");
+        if(password.contains(nickname)){
+            throw new IllegalArgumentException("닉네임과 관련 없는 비밀번호로 입력해주세요.");
         }
 
-        User user = new User(username, nickname, password);
+        password = passwordEncoder.encode(requestDto.getPassword());
+        User user = new User(nickname, password);
         userRepository.save(user);
     }
 
     @Override
     public void signin(SigninRequestDto requestDto, HttpServletResponse response) {
-        String username = requestDto.getUsername();
+        String nickname = requestDto.getNickname();
         String password = requestDto.getPassword();
 
-        User user = userRepository.findByUsername(username).orElseThrow(
+        User user = userRepository.findByNickname(nickname).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
 
@@ -54,7 +54,7 @@ public class AuthServiceImpl implements AuthService{
             throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
         }
 
-        String token = jwtUtil.createToken(user.getUsername());
+        String token = jwtUtil.createToken(user.getNickname());
         jwtUtil.addJwtToCookie(token, response);
     }
 }

@@ -44,13 +44,13 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String username){
-        log.info(username + "의 토큰 생성");
+    public String createToken(String nickname){
+        log.info(nickname + "의 토큰 생성");
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(username) // 사용자 id
+                        .setSubject(nickname) // 사용자 id
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급 시간
                         .signWith(key,signatureAlgorithm) // 키, 암호화 알고리즘
