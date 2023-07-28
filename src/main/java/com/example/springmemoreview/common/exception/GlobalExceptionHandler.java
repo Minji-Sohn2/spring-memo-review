@@ -1,4 +1,4 @@
-package com.example.springmemoreview.common;
+package com.example.springmemoreview.common.exception;
 
 import com.example.springmemoreview.common.dto.ApiResponseDto;
 import org.springframework.http.HttpStatus;
