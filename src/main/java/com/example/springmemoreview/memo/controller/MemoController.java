@@ -57,4 +57,12 @@ public class MemoController {
         memoService.deleteMemo(memoId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("메모 삭제 성공", HttpStatus.OK.value()));
     }
+
+    @GetMapping("/search")
+    public MemoPageResponseDto selectMemosContainKeyword(
+            @RequestParam("keyword") String keyword,
+            @RequestBody PageDto pageDto
+    ) {
+        return memoService.selectMemosContainKeyword(keyword, pageDto);
+    }
 }

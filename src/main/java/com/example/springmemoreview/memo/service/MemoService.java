@@ -7,8 +7,6 @@ import com.example.springmemoreview.memo.dto.MemoResponseDto;
 import com.example.springmemoreview.memo.entity.Memo;
 import com.example.springmemoreview.user.entity.User;
 
-import java.util.List;
-
 public interface MemoService {
     /**
      * 메모 작성
@@ -75,5 +73,5 @@ public interface MemoService {
      * @param keyword keyword
      * @return memo List
      */
-    List<Memo> selectMemosContainKeyword(String keyword);
+    MemoPageResponseDto selectMemosContainKeyword(String keyword, PageDto pageDto);
 }

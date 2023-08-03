@@ -2,10 +2,10 @@ package com.example.springmemoreview.memo.repository;
 
 import com.example.springmemoreview.memo.dto.MemoSearchCond;
 import com.example.springmemoreview.memo.entity.Memo;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface MemoRepositoryQuery {
 
-    List<Memo> searchByKeyword(MemoSearchCond cond);
+    Page<Memo> searchByKeyword(MemoSearchCond cond, Pageable pageable);
 }
