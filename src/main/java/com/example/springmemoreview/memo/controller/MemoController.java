@@ -1,7 +1,8 @@
 package com.example.springmemoreview.memo.controller;
 
 import com.example.springmemoreview.common.dto.ApiResponseDto;
-import com.example.springmemoreview.memo.dto.MemoListResponseDto;
+import com.example.springmemoreview.common.dto.PageDto;
+import com.example.springmemoreview.memo.dto.MemoPageResponseDto;
 import com.example.springmemoreview.memo.dto.MemoRequestDto;
 import com.example.springmemoreview.memo.dto.MemoResponseDto;
 import com.example.springmemoreview.memo.service.MemoService;
@@ -27,8 +28,8 @@ public class MemoController {
 
     // 전체 게시글 목록 조회
     @GetMapping("")
-    public ResponseEntity<MemoListResponseDto> getMemoList() {
-        MemoListResponseDto result = memoService.getMemoList();
+    public ResponseEntity<MemoPageResponseDto> getMemoPage(@RequestBody PageDto pageDto) {
+        MemoPageResponseDto result = memoService.getMemoPage(pageDto);
         return ResponseEntity.ok().body(result);
     }
 

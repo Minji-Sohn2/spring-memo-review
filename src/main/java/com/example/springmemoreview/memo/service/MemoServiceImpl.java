@@ -1,10 +1,12 @@
 package com.example.springmemoreview.memo.service;
 
+import com.example.springmemoreview.common.dto.PageDto;
 import com.example.springmemoreview.memo.dto.*;
 import com.example.springmemoreview.memo.entity.Memo;
 import com.example.springmemoreview.memo.repository.MemoRepository;
 import com.example.springmemoreview.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +29,10 @@ public class MemoServiceImpl implements MemoService {
     }
 
     @Override
-    public MemoListResponseDto getMemoList() {
-        List<SimpleMemoResponseDto> simpleMemoResponseDtoList
-                = memoRepository.findAllByOrderByCreatedAtDesc().stream()
-                .map(SimpleMemoResponseDto::new).toList();
+    public MemoPageResponseDto getMemoPage(PageDto pageDto) {
+        Page<Memo> memoPage = memoRepository.findAllByOrderByCreatedAtDesc(pageDto.toPageable());
 
-        return new MemoListResponseDto(simpleMemoResponseDtoList);
+        return new MemoPageResponseDto(memoPage.map(SimpleMemoResponseDto::new));
     }
 
     @Override

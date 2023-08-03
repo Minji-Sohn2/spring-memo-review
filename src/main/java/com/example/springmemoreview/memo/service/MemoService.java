@@ -1,6 +1,7 @@
 package com.example.springmemoreview.memo.service;
 
-import com.example.springmemoreview.memo.dto.MemoListResponseDto;
+import com.example.springmemoreview.common.dto.PageDto;
+import com.example.springmemoreview.memo.dto.MemoPageResponseDto;
 import com.example.springmemoreview.memo.dto.MemoRequestDto;
 import com.example.springmemoreview.memo.dto.MemoResponseDto;
 import com.example.springmemoreview.memo.entity.Memo;
@@ -23,7 +24,7 @@ public interface MemoService {
      *
      * @return 메모 목록
      */
-    MemoListResponseDto getMemoList();
+    MemoPageResponseDto getMemoPage(PageDto pageDto);
 
     /**
      * 메모 1개 조회
