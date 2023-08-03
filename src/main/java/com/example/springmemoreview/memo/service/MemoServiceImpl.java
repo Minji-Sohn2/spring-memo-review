@@ -1,9 +1,6 @@
 package com.example.springmemoreview.memo.service;
 
-import com.example.springmemoreview.memo.dto.MemoListResponseDto;
-import com.example.springmemoreview.memo.dto.MemoRequestDto;
-import com.example.springmemoreview.memo.dto.MemoResponseDto;
-import com.example.springmemoreview.memo.dto.SimpleMemoResponseDto;
+import com.example.springmemoreview.memo.dto.*;
 import com.example.springmemoreview.memo.entity.Memo;
 import com.example.springmemoreview.memo.repository.MemoRepository;
 import com.example.springmemoreview.user.entity.User;
@@ -16,7 +13,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 @Service
 @RequiredArgsConstructor
-public class MemoServiceImpl implements MemoService{
+public class MemoServiceImpl implements MemoService {
 
     private final MemoRepository memoRepository;
 
@@ -50,11 +47,11 @@ public class MemoServiceImpl implements MemoService{
     public MemoResponseDto updateMemo(Long memoId, MemoRequestDto requestDto, User user) {
         Memo memo = findMemo(memoId);
 
-        if(checkMemoUser(memo, user)) {
-            if(requestDto.getTitle() != null) {
+        if (checkMemoUser(memo, user)) {
+            if (requestDto.getTitle() != null) {
                 memo.changeTitle(requestDto.getTitle());
             }
-            if(requestDto.getContent() != null) {
+            if (requestDto.getContent() != null) {
                 memo.changeContent(requestDto.getContent());
             }
         } else {
@@ -68,7 +65,7 @@ public class MemoServiceImpl implements MemoService{
     public void deleteMemo(Long memoId, User user) {
         Memo memo = findMemo(memoId);
 
-        if(checkMemoUser(memo, user)) {
+        if (checkMemoUser(memo, user)) {
             memoRepository.delete(memo);
         } else {
             throw new RejectedExecutionException("작성자만 삭제할 수 있습니다.");
@@ -85,5 +82,12 @@ public class MemoServiceImpl implements MemoService{
     @Override
     public boolean checkMemoUser(Memo memo, User user) {
         return memo.getUser().getId() == user.getId();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Memo> selectMemosContainKeyword(String keyword) {
+        MemoSearchCond cond = MemoSearchCond.builder().keyword(keyword).build();
+        return memoRepository.searchByKeyword(cond);
     }
 }
